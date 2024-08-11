@@ -1,33 +1,20 @@
 package br.usuario.modelo;
 
+import br.usuario.modelo.vaidacoes.ValidacoesDiretor;
+
 public class RegraUsuarioService {
     public static void ativar(Usuario usuario, Usuario administrador) {
-        ativarAdministrador(usuario, administrador);
-        validarAdministrador(administrador);
+        ValidacoesDiretor.validar(usuario, administrador);
         usuario.ativar();
     }
 
     public static void desativar(Usuario usuario, Usuario administrador) {
-        ativarAdministrador(usuario, administrador);
-        validarAdministrador(administrador);
+        ValidacoesDiretor.validar(usuario, administrador);
         usuario.desativar();
     }
 
     public static void advertir(Usuario usuario, Usuario administrador) {
-        ativarAdministrador(usuario, administrador);
-        validarAdministrador(administrador);
+        ValidacoesDiretor.validar(usuario, administrador);
         usuario.advertir();
-    }
-
-    private static void validarAdministrador(Usuario administrador) {
-        if (administrador.getTipo() != TipoUsuario.ADMINISTRADOR) {
-            throw new SecurityException("Ação permitida apenas para administradores");
-        }
-    }
-
-    private static void ativarAdministrador(Usuario administrador1, Usuario administrador2){
-        if(administrador1 == administrador2){
-            throw new SecurityException("O administrador não pode se auto-ativar");
-        }
     }
 }
