@@ -40,12 +40,7 @@
             <version>5.11.0-M2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>br.ufes</groupId>
-            <artifactId>descontoService</artifactId>
-            <version>2.0</version>
-            <type>jar</type>
-        </dependency>
+        
     </dependencies>
 
     <build>
