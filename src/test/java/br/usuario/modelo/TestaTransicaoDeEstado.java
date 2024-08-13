@@ -93,8 +93,17 @@ public class TestaTransicaoDeEstado {
                 "O número de advertências não corresponde ao esperado que é igual a 0");
         //endregion
 
-        //region Teste de banido temporariamente até o tempo minímo aceito
+        
+        //region Testando a quantidade de advertências = 1
         RegraUsuarioService.advertir(usuario, adminitrador);
+        
+        numAdvertencias = usuario.getNumeroDeAdvertencias();
+        numAdvertenciasEsperado = 1;
+        assertEquals(numAdvertenciasEsperado, numAdvertencias,
+                "O número de advertências não corresponde ao esperado que é igual a 2");
+        //endregion
+                
+        //region Teste de banido temporariamente até o tempo minímo aceito
         RegraUsuarioService.advertir(usuario, adminitrador);
 
         Thread.sleep(tempoMillissegundoMinimoAceito);
