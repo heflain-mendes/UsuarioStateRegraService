@@ -151,7 +151,7 @@ public class TestaTransicaoDeEstado {
     }
 
     @Test
-    public void TestesDeAutorizacoesParaAtivarDesativarEAdvertir() throws Exception{
+    public void testesDeAutorizacoesParaAtivarDesativarEAdvertir() throws Exception{
         //region Criando os administradores e usuário
         var usuario1 = new Usuario("usuario", TipoUsuario.NORMAL, "123");
         var usuario2 = new Usuario("usuario", TipoUsuario.NORMAL, "123");
@@ -310,7 +310,7 @@ public class TestaTransicaoDeEstado {
     
     // Teste adicionado por Rafael e Gabriel
     @Test
-    public void ExplorarBanimentoPermanente() {
+    public void explorarBanimentoPermanente() {
         //Criação de usuários
         String senha = "123";
         Usuario usuario = new Usuario("User", TipoUsuario.NORMAL, senha);
@@ -348,7 +348,7 @@ public class TestaTransicaoDeEstado {
     
     // Teste adicionado por Gabriel e Rafael
     @Test
-    public void ExplorarPermissaoAdmin() throws InterruptedException {
+    public void explorarPermissaoAdmin() throws InterruptedException {
         //Criação de usuários
         String senha = "123";
         Usuario usuario = new Usuario("User", TipoUsuario.NORMAL, senha);
