@@ -426,7 +426,7 @@ public class TestaTransicaoDeEstado {
         }
 
         @ParameterizedTest
-        @CsvFileSource(resources = "/resources/casos_de_teste_estado.csv", numLinesToSkip = 1, delimiter = ';')
+        @CsvFileSource(resources = "/casos_de_teste_estado.csv", numLinesToSkip = 1, delimiter = ';')
         void testesUnitarios(
                         String codigoTeste,
                         String usuarioDestinoStatus,
