@@ -522,4 +522,88 @@ public class TestaTransicaoDeEstado {
                 return gerado;
         }
 
+    //Teste adicionado por Álvaro e Mário
+    @Test
+    public void testeDiagramaEstadoCompleto() throws InterruptedException{
+        //criação de usuários
+        Usuario usuarioAdmin = new Usuario("usuário Normal", TipoUsuario.ADMINISTRADOR, "alvaro");
+        Usuario usuarioNormal = new Usuario("usuário Admin", TipoUsuario.NORMAL, "mario");
+        
+        //Ativar usuario normal
+        RegraUsuarioService.ativar(usuarioNormal, usuarioAdmin);
+        assertEquals(Ativo.class.getSimpleName(), usuarioNormal.getNomeEstado(), "Estado não condiz com o esperado:"+Ativo.class.getSimpleName());
+        
+        //verificar quantidade advertências de um usuário ativo 
+        assertTrue( usuarioNormal.getNumeroDeAdvertencias() == 0 , "O número de advertências para um usuário recém ativo deveria ser zero");
+        
+        //Desativar usuario normal
+        RegraUsuarioService.desativar(usuarioNormal, usuarioAdmin);
+        
+        assertEquals(Desativado.class.getSimpleName(), usuarioNormal.getNomeEstado(), "Estado não condiz com o esperado"+Desativado.class.getSimpleName());
+        
+        //validar "travas" quando o usuário está dessativado
+        RuntimeException excecaoNegativaAdvertirDesativado = assertThrows(RuntimeException.class, () -> {
+            RegraUsuarioService.advertir(usuarioNormal, usuarioAdmin);
+        });
+        
+        assertEquals("Usuário desativado não pode ser advertido", excecaoNegativaAdvertirDesativado.getMessage(), "A mensagem de falha não corresponde com o esperado: Usuário desativado não pode ser advertido");
+        
+        RuntimeException excecaoNegativaDesativarDesativado = assertThrows(RuntimeException.class, () -> {
+            RegraUsuarioService.desativar(usuarioNormal, usuarioAdmin);
+        });
+
+        assertEquals("O usuário já está desativado", excecaoNegativaDesativarDesativado.getMessage(), "A mensagem de falha não corresponde com o esperado: O usuário já está desativado");
+        
+        //Reativar ususário desativado
+        
+        RegraUsuarioService.ativar(usuarioNormal, usuarioAdmin);
+        assertEquals(Ativo.class.getSimpleName(), usuarioNormal.getNomeEstado(), "O usuário não retornou ao estado de ativo após a desativação");
+        
+        //advertir usuário ativo e banir temporariamente
+        RegraUsuarioService.advertir(usuarioNormal, usuarioAdmin);
+        assertTrue( usuarioNormal.getNumeroDeAdvertencias() == 1 , "O número de advertências está incorreto");
+        
+        RegraUsuarioService.advertir(usuarioNormal, usuarioAdmin);
+        
+        assertEquals(BanidoTemporario.class.getSimpleName(), usuarioNormal.getNomeEstado(), "O usuário não alterou estado de ativo para BanidoTemporario");
+        
+        assertTrue( usuarioNormal.getNumeroDeAdvertencias() == 2 , "O número de advertências não foi incrementado");
+        
+        Thread.sleep(30500);   
+        
+        assertEquals(usuarioNormal.getNomeEstado(), Ativo.class.getSimpleName(), "O estado do usuário não retornou para ativo após o tempo banimento temporário");
+        
+        // verificar números de advertências quando muda para o estado desativado
+        RegraUsuarioService.desativar(usuarioNormal, usuarioAdmin);
+        assertTrue( usuarioNormal.getNumeroDeAdvertencias() == 2 , "O número de advertências não pode ser alterado quando muda para o estado desativado");
+        
+        RegraUsuarioService.ativar(usuarioNormal, usuarioAdmin);
+        
+        
+        //Realizar Banimento Definitivo e validar as travas do sistema
+        RegraUsuarioService.advertir(usuarioNormal, usuarioAdmin);
+         
+        assertTrue( usuarioNormal.getNumeroDeAdvertencias() == 3 , "O número de advertências não foi incrementado Para o Banimento definitivo");
+         
+        assertEquals(usuarioNormal.getNomeEstado(), BanidoDefinitivo.class.getSimpleName(), "O estado do não foi alterado para: "+BanidoDefinitivo.class.getSimpleName());
+        
+        RuntimeException excecaoDesativarBanidoFefinitivo = assertThrows(RuntimeException.class, () -> {
+            RegraUsuarioService.desativar(usuarioNormal, usuarioAdmin);
+        });
+        
+        assertEquals("Usuário banido definitivamente não pode ser desativado", excecaoDesativarBanidoFefinitivo.getMessage(), "A mensagem de falha não corresponde com o esperado: Usuário banido definitivamente não pode ser desativado");
+
+        RuntimeException excecaoAtivarBanidoDefinitivo = assertThrows(RuntimeException.class, () -> {
+            RegraUsuarioService.ativar(usuarioNormal, usuarioAdmin);
+        });
+        
+        assertEquals("Usuário banido definitivamente não pode ser ativado", excecaoAtivarBanidoDefinitivo.getMessage(), "A mensagem de falha não corresponde com o esperado: Usuário banido definitivamente não pode ser ativado");
+
+        RuntimeException excecaoAdvertirBanidoDefinitivo = assertThrows(RuntimeException.class, () -> {
+            RegraUsuarioService.advertir(usuarioNormal, usuarioAdmin);
+        });
+        
+        assertEquals("Usuário banido definitivamente não pode ser advertido", excecaoAdvertirBanidoDefinitivo.getMessage(), "A mensagem de falha não corresponde com o esperado: Usuário banido definitivamente não pode ser advertido");
+        
+    }
 }
