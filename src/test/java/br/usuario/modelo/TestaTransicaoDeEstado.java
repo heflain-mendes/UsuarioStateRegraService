@@ -606,4 +606,19 @@ public class TestaTransicaoDeEstado {
         assertEquals("Usuário banido definitivamente não pode ser advertido", excecaoAdvertirBanidoDefinitivo.getMessage(), "A mensagem de falha não corresponde com o esperado: Usuário banido definitivamente não pode ser advertido");
         
     }
+
+    //Teste adicionado por Arthur e Daniel
+    @Test
+    public void TesteCriarUsuarioInvalido()
+    {   
+        IllegalArgumentException excecaoNome = assertThrows(IllegalArgumentException.class, () -> {
+                Usuario u = new Usuario(null, TipoUsuario.NORMAL, "1234");
+            });
+        assertEquals("O nome do usuário não pode ser vazio ou nulo", excecaoNome.getMessage());
+        
+        IllegalArgumentException excecaoSenha = assertThrows(IllegalArgumentException.class, () -> {
+                Usuario u = new Usuario("Tigas", TipoUsuario.NORMAL, null);
+            });
+        assertEquals("A senha do usuário não pode ser vazia ou nula", excecaoSenha.getMessage());
+    }
 }
